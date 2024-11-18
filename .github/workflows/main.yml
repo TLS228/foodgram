@@ -138,4 +138,4 @@ jobs:
         with:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
-          message: Здравствуйте, выполнен новый деплой проекта! Название коммита - ${{ github.event.commits[0].message }}. Автор который его выполнил - ${{ github.actor }}.
+          message: Здравствуйте, выполнен новый деплой проекта! Название коммита - ${{ github.event.commits[0].message }}. Автор который его выполнил - ${{ github.actor }}.  
