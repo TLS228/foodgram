@@ -111,15 +111,16 @@ REST_FRAMEWORK = {
         'django_filters.rest_framework.DjangoFilterBackend',
         'rest_framework.filters.SearchFilter',
     ],
+    'DEFAULT_PAGINATION_CLASS': 'api.pagination.CustomPagePagination',
+    'PAGE_SIZE': 6,
 }
 
 # Настройки djoser
 DJOSER = {
     'LOGIN_FIELD': 'email',
-    'USER_CREATE_PASSWORD_RETYPE': True,
+    'HIDE_USERS': False,
     'SERIALIZERS': {
         'user': 'api.serializers.UserSerializer',
-        'user_create': 'api.serializers.UserSerializer',
         'current_user': 'api.serializers.UserSerializer',
     },
 }
@@ -138,7 +139,7 @@ USE_TZ = True
 
 # Статические и медиа файлы
 STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'collected_static'
+STATIC_ROOT = BASE_DIR / 'static'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'

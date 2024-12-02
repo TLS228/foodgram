@@ -30,7 +30,7 @@ class UserSerializer(serializers.ModelSerializer):
             'first_name',
             'last_name',
             'avatar',
-            'is_subscribed'
+            'is_subscribed',
         )
 
     def get_is_subscribed(self, obj):
