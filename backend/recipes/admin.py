@@ -14,7 +14,10 @@ from recipes.models import (
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
     """Администрирование тегов."""
-    list_display = ('id', 'name', 'slug')
+    list_display = ('name', 'slug')
+    empty_value_display = 'значение отсутствует'
+    list_filter = ('name',)
+    search_fields = ('name',)
 
 
 @admin.register(Ingredient)
