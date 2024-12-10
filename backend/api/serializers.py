@@ -85,20 +85,10 @@ class SubscriptionSerializer(UserSerializer):
     recipes = serializers.SerializerMethodField()
     recipes_count = serializers.ReadOnlyField(source='recipes.count')
 
-    class Meta:
-        model = User
-        fields = (
-            'email',
-            'id',
-            'username',
-            'first_name',
-            'last_name',
-            'avatar',
-            'is_subscribed',
-            'recipes',
-            'recipes_count'
-        )
-        read_only_fields = ('email', 'username', 'first_name', 'last_name')
+    class Meta(UserSerializer.Meta):
+        fields = UserSerializer.Meta.fields + (
+            'recipes', 'recipes_count'
+        )  # type: ignore
 
     def get_recipes(self, obj):
         request = self.context.get('request')
@@ -229,8 +219,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
             raise ValidationError('Изображение является обязательным.')
         return value
 
-    def create_tags_ingredients(self, recipe, tags_data, ingredients_data):
-        recipe.tags.set(tags_data)
+    def create_ingredients(self, recipe, ingredients_data):
         IngredientInRecipe.objects.bulk_create(
             IngredientInRecipe(
                 recipe=recipe,
@@ -246,7 +235,8 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         tags_data = validated_data.pop('tags')
         user = self.context.get('request').user
         recipe = Recipe.objects.create(author=user, **validated_data)
-        self.create_tags_ingredients(recipe, tags_data, ingredients_data)
+        recipe.tags.set(tags_data)
+        self.create_ingredients(recipe, ingredients_data)
         return recipe
 
     @transaction.atomic
@@ -254,10 +244,9 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         ingredients_data = validated_data.pop('ingredient_in_recipe', [])
         tags_data = validated_data.pop('tags', [])
         instance.ingredients.clear()
-        instance.tags.clear()
-        self.create_tags_ingredients(instance, tags_data, ingredients_data)
-        super().update(instance, validated_data)
-        return instance
+        instance.tags.set(tags_data)
+        self.create_ingredients(instance, ingredients_data)
+        return super().update(instance, validated_data)
 
     def to_representation(self, instance):
         return RecipeReadSerializer(instance, context=self.context).data
