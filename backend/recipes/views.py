@@ -1,9 +1,11 @@
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import redirect, get_object_or_404
+from django.http import HttpRequest, HttpResponse
 
-from .models import Recipe
+from recipes.models import Recipe
 
 
-def redirect_to_original(request, slug):
-    """Перенаправление с короткой ссылки на оригинальную."""
-    recipe = get_object_or_404(Recipe, short_url=slug)
-    return redirect(f'/recipes/{recipe.pk}/')
+def short_link_redirect(request: HttpRequest, short_code: str) -> HttpResponse:
+    """Перенаправление на полную ссылку рецепта."""
+    recipe = get_object_or_404(Recipe, short_code=short_code)
+    full_url = request.build_absolute_uri(f'/recipes/{recipe.id}')
+    return redirect(full_url)
