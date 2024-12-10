@@ -112,7 +112,6 @@ REST_FRAMEWORK = {
         'rest_framework.filters.SearchFilter',
     ],
     'DEFAULT_PAGINATION_CLASS': 'api.pagination.PagePagination',
-    'SEARCH_PARAM': 'name',
 }
 
 # Настройки djoser
