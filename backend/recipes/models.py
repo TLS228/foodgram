@@ -5,18 +5,17 @@ from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.db.models import UniqueConstraint
+from backend.recipes.constants import (MAX_ING_LENGTH_NAME,
+                                       MAX_ING_LENGTH_UNIT,
+                                       MAX_RECIPE_LENGTH_NAME,
+                                       MAX_TAG_LENGTH_NAME,
+                                       MAX_TAG_LENGTH_SLUG,
+                                       STR_LIMIT, MAX_CODE_LENGTH,
+                                       MAX_TIME, MIN_TIME,
+                                       MAX_INGREDIENT_AMOUNT,
+                                       MIN_INGREDIENT_AMOUNT
+                                       )
 
-
-MAX_CODE_LENGTH = 10
-MAX_INGREDIENT_AMOUNT = 1000
-MAX_ING_LENGTH_UNIT = 50
-MAX_ING_LENGTH_NAME = 100
-MAX_LENGTH = 255
-MAX_TAG_LENGTH = 50
-MAX_TIME = 300
-MIN_INGREDIENT_AMOUNT = 1
-MIN_TIME = 1
-STR_LIMIT = 50
 
 User = get_user_model()
 
@@ -24,12 +23,12 @@ User = get_user_model()
 class Tag(models.Model):
     """Модель тега."""
     name = models.CharField(
-        max_length=MAX_TAG_LENGTH,
+        max_length=MAX_TAG_LENGTH_NAME,
         verbose_name='Название',
         unique=True
     )
     slug = models.SlugField(
-        max_length=MAX_TAG_LENGTH,
+        max_length=MAX_TAG_LENGTH_SLUG,
         verbose_name='Идентификатор',
         unique=True
     )
@@ -79,7 +78,7 @@ class Recipe(models.Model):
     )
     name = models.CharField(
         verbose_name='Название',
-        max_length=MAX_LENGTH
+        max_length=MAX_RECIPE_LENGTH_NAME
     )
     image = models.ImageField(
         verbose_name='Изображение',
@@ -195,6 +194,12 @@ class AbstractCollection(models.Model):
 
     class Meta:
         abstract = True
+        constraints = [
+            UniqueConstraint(
+                fields=['user', 'recipe'],
+                name='unique_recipe_user_%(class)s'
+            )
+        ]
 
 
 class Favorite(AbstractCollection):
@@ -204,14 +209,6 @@ class Favorite(AbstractCollection):
         default_related_name = 'favorites'
         verbose_name = 'избранное'
         verbose_name_plural = 'Избранное'
-        constraints = [
-            UniqueConstraint(
-                fields=['user', 'recipe'], name='unique_favorite'
-            )
-        ]
-
-    def __str__(self):
-        return f'{self.user} добавил "{self.recipe.name}" в избранное'
 
 
 class ShoppingCart(AbstractCollection):
@@ -221,11 +218,3 @@ class ShoppingCart(AbstractCollection):
         default_related_name = 'shopping_cart'
         verbose_name = 'корзина покупок'
         verbose_name_plural = 'Корзина покупок'
-        constraints = [
-            UniqueConstraint(
-                fields=['user', 'recipe'], name='unique_shopping_cart'
-            )
-        ]
-
-    def __str__(self):
-        return f'{self.user} добавил "{self.recipe.name}" в корзину покупок'

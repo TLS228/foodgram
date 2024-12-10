@@ -6,14 +6,13 @@ from recipes.models import Ingredient
 
 
 class Command(BaseCommand):
-    help = 'Loads ingredients from a CSV file'
-
-    def add_arguments(self, parser):
-        parser.add_argument('file_path', type=str,
-                            help='The path to the CSV file with ingredients')
+    help = 'Loads ingredients from a predefined CSV file'
 
     def handle(self, *args, **kwargs):
-        file_path = kwargs['file_path']
+        # Захардкоженный путь к файлу
+        file_path = 'data/ingredients.csv'
+
+        ingredients_to_create = []
 
         with open(file_path, newline='', encoding='utf-8') as csvfile:
             reader = csv.reader(csvfile)
@@ -24,16 +23,18 @@ class Command(BaseCommand):
                     )
                     continue
                 name, measurement_unit = row
-                # Создаем или обновляем ингредиент
-                ingredient, created = Ingredient.objects.get_or_create(
+                # Создаём объект для последующей массовой вставки
+                ingredients_to_create.append(Ingredient(
                     name=name.strip(),
                     measurement_unit=measurement_unit.strip()
-                )
-                if created:
-                    self.stdout.write(self.style.SUCCESS(
-                        f'Ингредиент добавлен: {ingredient.name}')
-                    )
-                else:
-                    self.stdout.write(self.style.WARNING(
-                        f'Ингредиент уже существует: {ingredient.name}')
-                    )
+                ))
+
+        # Массовая вставка с игнорированием конфликтов
+        Ingredient.objects.bulk_create(
+            ingredients_to_create,
+            ignore_conflicts=True
+        )
+
+        self.stdout.write(self.style.SUCCESS(
+            f'Ингредиенты успешно добавлены из файла {file_path}')
+        )
