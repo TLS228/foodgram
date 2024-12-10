@@ -37,8 +37,10 @@ class UserViewSet(DjoserUserViewSet):
     ordering_fields = ('username', 'email')
 
     def get_permissions(self):
-        if self.action in ['retrieve', 'list', 'create', 'me']:
+        if self.action in ['retrieve', 'list', 'create']:
             return (permissions.AllowAny(),)
+        elif self.action in ['me']:
+            return (permissions.IsAuthenticated(),)
         return (permissions.IsAuthenticated(),)
 
     @action(detail=False,
