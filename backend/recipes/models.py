@@ -5,16 +5,13 @@ from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.db.models import UniqueConstraint
-from backend.recipes.constants import (MAX_ING_LENGTH_NAME,
-                                       MAX_ING_LENGTH_UNIT,
-                                       MAX_RECIPE_LENGTH_NAME,
-                                       MAX_TAG_LENGTH_NAME,
-                                       MAX_TAG_LENGTH_SLUG,
-                                       STR_LIMIT, MAX_CODE_LENGTH,
-                                       MAX_TIME, MIN_TIME,
-                                       MAX_INGREDIENT_AMOUNT,
-                                       MIN_INGREDIENT_AMOUNT
-                                       )
+from recipes.constants import (MAX_ING_LENGTH_NAME, MAX_ING_LENGTH_UNIT,
+                               MAX_RECIPE_LENGTH_NAME, MAX_TAG_LENGTH_NAME,
+                               MAX_TAG_LENGTH_SLUG,
+                               STR_LIMIT, MAX_CODE_LENGTH,
+                               MAX_TIME, MIN_TIME,
+                               MAX_INGREDIENT_AMOUNT, MIN_INGREDIENT_AMOUNT
+                               )
 
 
 User = get_user_model()

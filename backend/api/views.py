@@ -10,7 +10,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from api.filters import IngredientFilter, RecipeFilter
-from api.pagination import CustomPagePagination
+from api.pagination import PagePagination
 from api.permissions import AuthorAccessOnly
 from api.serializers import (
     AvatarSerializer, FavoriteSerializer, FollowSerializer,
@@ -31,7 +31,7 @@ class UserViewSet(DjoserUserViewSet):
     """Работа с пользователями."""
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    pagination_class = CustomPagePagination
+    pagination_class = PagePagination
     filter_backends = (DjangoFilterBackend, filters.OrderingFilter)
     filterset_fields = ('username', 'email')
     ordering_fields = ('username', 'email')
