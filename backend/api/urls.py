@@ -9,16 +9,16 @@ from api.views import (
 )
 
 # Создаем роутер
-api_v1 = DefaultRouter()
+api = DefaultRouter()
 
 # Регистрируем вьюсеты с нужными базовыми именами
-api_v1.register('users', UserViewSet, basename='user')
-api_v1.register('tags', TagViewSet, basename='tag')
-api_v1.register('ingredients', IngredientViewSet, basename='ingredient')
-api_v1.register('recipes', RecipeViewSet, basename='recipe')
+api.register('users', UserViewSet, basename='user')
+api.register('tags', TagViewSet, basename='tag')
+api.register('ingredients', IngredientViewSet, basename='ingredient')
+api.register('recipes', RecipeViewSet, basename='recipe')
 
 # Определяем урлы
 urlpatterns = [
-    path('', include(api_v1.urls)),
+    path('', include(api.urls)),
     path('auth/', include('djoser.urls.authtoken')),
 ]

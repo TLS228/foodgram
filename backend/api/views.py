@@ -13,9 +13,9 @@ from api.filters import IngredientFilter, RecipeFilter
 from api.pagination import PagePagination
 from api.permissions import AuthorAccessOnly
 from api.serializers import (
-    AvatarSerializer, FavoriteSerializer, FollowSerializer,
+    AvatarSerializer, FollowSerializer,
     IngredientSerializer, RecipeReadSerializer, RecipeWriteSerializer,
-    RecipeShortSerializer, ShoppingCartSerializer, SubscriptionSerializer,
+    RecipeShortSerializer, SubscriptionSerializer,
     TagSerializer, UserSerializer
 )
 from recipes.models import (
@@ -37,16 +37,9 @@ class UserViewSet(DjoserUserViewSet):
     ordering_fields = ('username', 'email')
 
     def get_permissions(self):
-        if self.action in ['retrieve', 'list', 'create']:
+        if self.action in ['retrieve', 'list', 'create', 'me']:
             return (permissions.AllowAny(),)
         return (permissions.IsAuthenticated(),)
-
-    @action(detail=False,
-            methods=['GET'],
-            permission_classes=(permissions.IsAuthenticated,))
-    def me(self, request, *args, **kwargs):
-        """Просмотр информации о пользователе."""
-        return super().me(request, *args, **kwargs)
 
     @action(detail=False,
             methods=['PUT'],
@@ -124,12 +117,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return RecipeReadSerializer
         return RecipeWriteSerializer
 
-    def add_recipe(self, serializer_cl, request, pk):
+    def add_recipe(self, model, user, pk):
         recipe = get_object_or_404(Recipe, pk=pk)
-        data = {'recipe': recipe.id, 'user': request.user.id}
-        serializer = serializer_cl(data=data, context={'request': request})
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
+        obj, created = model.objects.get_or_create(user=user, recipe=recipe)
+        if not created:
+            return Response(
+                {'errors': 'Рецепт уже добавлен!'},
+                status=status.HTTP_400_BAD_REQUEST)
         return Response(
             RecipeShortSerializer(recipe).data,
             status=status.HTTP_201_CREATED)
@@ -148,7 +142,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             permission_classes=(permissions.IsAuthenticated,))
     def favorite(self, request, pk=None):
         if request.method == 'POST':
-            return self.add_recipe(FavoriteSerializer, request, pk)
+            return self.add_recipe(Favorite, request.user, pk)
         return self.delete_recipe(Favorite, request.user, pk)
 
     @action(detail=True,
@@ -156,7 +150,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             permission_classes=(permissions.IsAuthenticated,))
     def shopping_cart(self, request, pk=None):
         if request.method == 'POST':
-            return self.add_recipe(ShoppingCartSerializer, request, pk)
+            return self.add_recipe(ShoppingCart, request.user, pk)
         return self.delete_recipe(ShoppingCart, request.user, pk)
 
     @action(detail=True, methods=['GET'], url_path='get-link')
