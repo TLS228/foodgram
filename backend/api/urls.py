@@ -12,10 +12,10 @@ from api.views import (
 api = DefaultRouter()
 
 # Регистрируем вьюсеты с нужными базовыми именами
-api.register('users', UserViewSet, basename='user')
-api.register('tags', TagViewSet, basename='tag')
-api.register('ingredients', IngredientViewSet, basename='ingredient')
-api.register('recipes', RecipeViewSet, basename='recipe')
+api.register('users', UserViewSet, basename='users')
+api.register('tags', TagViewSet, basename='tags')
+api.register('ingredients', IngredientViewSet, basename='ingredients')
+api.register('recipes', RecipeViewSet, basename='recipes')
 
 # Определяем урлы
 urlpatterns = [

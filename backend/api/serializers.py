@@ -263,28 +263,3 @@ class RecipeShortSerializer(serializers.ModelSerializer):
             'image',
             'cooking_time',
         )
-
-
-# =======================
-# Сериализаторы для ShoppingCart и Favorite
-# =======================
-
-class CreateSerializer(serializers.ModelSerializer):
-    def validate_recipe(self, value):
-        user = self.context['request'].user
-        model = self.__class__.Meta.model
-        if model.objects.filter(user=user, recipe=value).exists():
-            raise ValidationError('Рецепт уже добавлен!')
-        return value
-
-
-class ShoppingCartSerializer(CreateSerializer):
-    class Meta:
-        model = ShoppingCart
-        fields = ('user', 'recipe',)
-
-
-class FavoriteSerializer(CreateSerializer):
-    class Meta:
-        model = Favorite
-        fields = ('user', 'recipe',)

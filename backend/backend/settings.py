@@ -111,7 +111,6 @@ REST_FRAMEWORK = {
         'django_filters.rest_framework.DjangoFilterBackend',
         'rest_framework.filters.SearchFilter',
     ],
-    'DEFAULT_PAGINATION_CLASS': 'api.pagination.PagePagination',
 }
 
 # Настройки djoser
@@ -125,11 +124,6 @@ DJOSER = {
 }
 
 # Настройки локализации
-LANGUAGE_CODE = 'ru-RU'
-TIME_ZONE = 'UTC'
-USE_I18N = True
-USE_L10N = True
-USE_TZ = True
 LANGUAGE_CODE = 'ru-RU'
 TIME_ZONE = 'UTC'
 USE_I18N = True

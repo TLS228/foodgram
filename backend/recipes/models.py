@@ -10,8 +10,7 @@ from recipes.constants import (MAX_ING_LENGTH_NAME, MAX_ING_LENGTH_UNIT,
                                MAX_TAG_LENGTH_SLUG,
                                STR_LIMIT, MAX_CODE_LENGTH,
                                MAX_TIME, MIN_TIME,
-                               MAX_INGREDIENT_AMOUNT, MIN_INGREDIENT_AMOUNT
-                               )
+                               MAX_INGREDIENT_AMOUNT, MIN_INGREDIENT_AMOUNT)
 
 
 User = get_user_model()
