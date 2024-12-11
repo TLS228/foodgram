@@ -10,7 +10,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         # Захардкоженный путь к файлу
-        file_path = 'backend/recipes/management/ingredients.csv'
+        file_path = 'recipes/management/ingredients.csv'
 
         ingredients_to_create = []
 
